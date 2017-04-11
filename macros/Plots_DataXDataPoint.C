@@ -1,15 +1,57 @@
-void Plots_DataXMC()
+void Plots_DataXDataPoint()
 {
    int version = 0;
    
    int nbx=2544;
-   const char * trg = "L1_Mu10_DiJet32";
+   const char * trg = "L1_DoubleJetC100Eta2p3_dEtaMax1p6";
+//   trg = "L1_Mu10_DiJet32";
    
-   TFile * f1 = new TFile(Form("qcd_%d_bx_%s.root",nbx,trg),"old");
-   TFile * f2 = new TFile(Form("data_%d_bx_%s_offlumi.root",nbx,trg),"old");
-   TGraphAsymmErrors * g1 = (TGraphAsymmErrors*) f1 -> Get("rate_total");
-   TGraphAsymmErrors * g2 = (TGraphAsymmErrors*) f2 -> Get("rate_total");
+   // data point
+   int n_dp = 4;
+   double rate_dp[100];
+   double ratee_dp[100];
+   double pu_dp[100];
+   double pue_dp[100];
+   
+   pu_dp[0] = 45;
+   pu_dp[1] = 47;
+   pu_dp[2] = 50;
+   pu_dp[3] = 55;
+   pue_dp[0] = 0;
+   pue_dp[1] = 0;
+   pue_dp[3] = 0;
+   pue_dp[0] = 0;
+   
+   if ( std::string(trg) == "L1_Mu10_DiJet32" )
+   {
+      rate_dp [0] = 2254.95;
+      ratee_dp[0] = 258.661;
+      rate_dp [1] = 2366.78;
+      ratee_dp[1] = 298.186;
+      rate_dp [2] = 2669.37;
+      ratee_dp[2] = 326.115;
+      rate_dp [3] = 3698.15;
+      ratee_dp[3] = 438.89;
+   }
+   if ( std::string(trg) == "L1_DoubleJetC100Eta2p3_dEtaMax1p6" )
+   {
+      rate_dp [0] = 3857.15;
+      ratee_dp[0] = 338.295;
+      rate_dp [1] = 4357.88;
+      ratee_dp[1] = 404.619;
+      rate_dp [2] = 4900.48;
+      ratee_dp[2] = 441.861;
+      rate_dp [3] = 4948.23;
+      ratee_dp[3] = 507.678;
+   }
+   
+   TGraphErrors * g1 = new TGraphErrors(n_dp,pu_dp,rate_dp,pue_dp,ratee_dp);
    g1 -> SetMarkerStyle(20);
+   g1 -> SetMarkerColor(kBlue);
+   g1 -> SetLineColor(kBlue);
+   
+   TFile * f2 = new TFile(Form("data_%d_bx_%s_offlumi.root",nbx,trg),"old");
+   TGraphAsymmErrors * g2 = (TGraphAsymmErrors*) f2 -> Get("rate_total");
    g2 -> SetMarkerStyle(20);
    g2 -> SetMarkerColor(kRed);
    g2 -> SetLineColor(kRed);
@@ -19,10 +61,6 @@ void Plots_DataXMC()
    
    TCanvas * c1 = new TCanvas("c1","", 700,600);
    c1->SetLeftMargin(0.15);
-   
-   TF1 * pol2_1 = new TF1("pol2_1","pol2",0,70);
-   pol2_1 -> SetLineColor(kBlack);
-   TFitResultPtr fit1 = g1 -> Fit(pol2_1,"S","",minFit,70);
    
    TF1 * pol2_2 = new TF1("pol2_2","pol2",0,70);
    pol2_2 -> SetLineColor(kRed);
@@ -61,16 +99,8 @@ void Plots_DataXMC()
    if ( version == 0 )
    {
       leg->SetY1(0.8);
-      leg->AddEntry(g1,"QCD (pol2 fit)","lp");
-      leg->AddEntry(g2,"Data (pol2 fit)","lp");
-   }
-   if ( version == 1 )
-   {
-      leg->SetHeader(gtitle.c_str());
-      leg->AddEntry(g2,"pp 13 TeV collisions data","p");
-      leg->AddEntry(pol2_2,"Pol2 fit to pp 13 TeV collisions data","l");
-      leg->AddEntry(g1,"QCD Monte Carlo pp 13 TeV","p");
-      leg->AddEntry(pol2_1,"Pol2 fit to QCD Monte Carlo pp 13 TeV","l");
+      leg->AddEntry(g1,"Data run 283171 (L1T Ntuple)","p");
+      leg->AddEntry(g2,"Data parked ZB (pol2 fit)","lp");
    }
    
    
@@ -90,6 +120,6 @@ void Plots_DataXMC()
 //    
    gPad->Modified();
    
-  c1 -> SaveAs(Form("%s_DataXMC_%d_bx_v%d.png",trg,nbx,version));  
+  c1 -> SaveAs(Form("%s_DataXDataPoint_%d_bx_v%d.png",trg,nbx,version));  
  
 }
