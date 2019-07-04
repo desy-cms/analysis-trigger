@@ -24,7 +24,8 @@ using TH2s = std::map<std::string, TH2F*>;
      
 void reweightFtoCDE(OnlineBtagAnalyser &);
 void reweightQCDtoData(OnlineBtagAnalyser &);
-void reweightQCDtoDataEta(OnlineBtagAnalyser &);
+void reweightQCDtoDataCDE(OnlineBtagAnalyser &);
+void reweightQCDtoDataF(OnlineBtagAnalyser &);
 
 // =============================================================================================   
 int main(int argc, char ** argv)
@@ -206,7 +207,8 @@ int main(int argc, char ** argv)
    // reweight 2017F - too weird!?
 //      reweightFtoCDE(onlinebtag);
    // reweight QCD to data CDE
-//   if ( eras[0] == "2017CDE" )  reweightQCDtoDataEta(onlinebtag);
+   if ( eras[0] == "2017CDE" )  reweightQCDtoDataCDE(onlinebtag);
+   if ( eras[0] == "2017F" )    reweightQCDtoDataF(onlinebtag);
       
    // If there is any AI selection, otherwise always true
       if ( ! onlinebtag.selectionAI()                  )   continue;
@@ -235,7 +237,216 @@ int main(int argc, char ** argv)
    
 } //end main
 
-void reweightQCDtoDataEta(OnlineBtagAnalyser & ana)
+
+
+// ===========================
+void reweightQCDtoDataF(OnlineBtagAnalyser & ana)
+{
+   if ( ! ana.config()->isMC() ) return;
+   if ( ana.config()->index() < 1 ) return;
+   
+   auto hcut = ana.histogram("cutflow");
+   auto cut = ana.cutflow();
+   ++cut;
+   if ( std::string(hcut -> GetXaxis()-> GetBinLabel(cut+1)) == "" )
+      hcut -> GetXaxis()-> SetBinLabel(cut+1,"*** Re-weight QCD MC to data 2017F");
+   
+   // reweights for 2017 era F to match 2017 eras C+D+E
+   TF1 wbin[6][6];
+   // bin1 §
+   wbin[0][0] = TF1("w_bin1_me" ,"pol2(0)",0,1500);  // eta ME
+   wbin[0][1] = TF1("w_bin1_pe" ,"pol2(0)",0,1500);  // eta PE
+   wbin[0][2] = TF1("w_bin1_mb" ,"pol3(0)",0,1500);  // eta MB
+   wbin[0][3] = TF1("w_bin1_pb" ,"pol3(0)",0,1500);  // eta PB
+   wbin[0][4] = TF1("w_bin1_mbe","pol3(0)",0,1500);  // eta MBE
+   wbin[0][5] = TF1("w_bin1_pbe","pol3(0)",0,1500);  // eta PBE
+   // bin2  §
+   wbin[1][0] = TF1("w_bin2_me" ,"pol2(0)",0,1500);  // eta ME
+   wbin[1][1] = TF1("w_bin2_pe" ,"pol2(0)",0,1500);  // eta PE
+   wbin[1][2] = TF1("w_bin2_mb" ,"pol1(0)",0,1500);  // eta MB
+   wbin[1][3] = TF1("w_bin2_pb" ,"pol1(0)",0,1500);  // eta PB
+   wbin[1][4] = TF1("w_bin2_mbe","pol1(0)",0,1500);  // eta MBE
+   wbin[1][5] = TF1("w_bin2_pbe","pol2(0)",0,1500);  // eta PBE
+   // bin3  §
+   wbin[2][0] = TF1("w_bin3_me" ,"pol2(0)",0,1500);  // eta ME
+   wbin[2][1] = TF1("w_bin3_pe" ,"pol2(0)",0,1500);  // eta PE
+   wbin[2][2] = TF1("w_bin3_mb" ,"pol3(0)",0,1500);  // eta MB
+   wbin[2][3] = TF1("w_bin3_pb" ,"pol3(0)",0,1500);  // eta PB
+   wbin[2][4] = TF1("w_bin3_mbe","pol2(0)",0,1500);  // eta MBE
+   wbin[2][5] = TF1("w_bin3_pbe","pol2(0)",0,1500);  // eta PBE
+   // bin4  §
+   wbin[3][0] = TF1("w_bin4_me" ,"pol2(0)",0,1500);  // eta ME
+   wbin[3][1] = TF1("w_bin4_pe" ,"pol2(0)",0,1500);  // eta PE
+   wbin[3][2] = TF1("w_bin4_mb" ,"pol3(0)",0,1500);  // eta MB
+   wbin[3][3] = TF1("w_bin4_pb" ,"pol3(0)",0,1500);  // eta PB
+   wbin[3][4] = TF1("w_bin4_mbe","pol2(0)",0,1500);  // eta MBE
+   wbin[3][5] = TF1("w_bin4_pbe","pol2(0)",0,1500);  // eta PBE
+   // bin5  §
+   wbin[4][0] = TF1("w_bin5_me" ,"pol1(0)",0,1500);  // eta ME
+   wbin[4][1] = TF1("w_bin5_pe" ,"pol1(0)",0,1500);  // eta PE
+   wbin[4][2] = TF1("w_bin5_mb" ,"pol1(0)",0,1500);  // eta MB
+   wbin[4][3] = TF1("w_bin5_pb" ,"pol1(0)",0,1500);  // eta PB
+   wbin[4][4] = TF1("w_bin5_mbe","pol1(0)",0,1500);  // eta MBE
+   wbin[4][5] = TF1("w_bin5_pbe","pol2(0)",0,1500);  // eta PBE
+   
+   
+   // parameters
+   // bin 1
+   // ME
+   wbin[0][0].SetParameter(0,     -1.38873);
+   wbin[0][0].SetParameter(1,    0.0550498);
+   wbin[0][0].SetParameter(2, -0.000259024);
+   // PE                      
+   wbin[0][1].SetParameter(0,    -0.710186);
+   wbin[0][1].SetParameter(1,    0.0357005);
+   wbin[0][1].SetParameter(2, -0.000134505);
+   // MB                      
+   wbin[0][2].SetParameter(0,     -1.61038);
+   wbin[0][2].SetParameter(1,    0.0802513);
+   wbin[0][2].SetParameter(2, -0.000741898);
+   wbin[0][2].SetParameter(3,  2.30218e-06);
+   // PB                      
+   wbin[0][3].SetParameter(0,     -1.65898);
+   wbin[0][3].SetParameter(1,    0.0808882);
+   wbin[0][3].SetParameter(2, -0.000744568);
+   wbin[0][3].SetParameter(3,  2.33914e-06);
+   // MBE                     
+   wbin[0][4].SetParameter(0,     -1.68883);
+   wbin[0][4].SetParameter(1,    0.0803238);
+   wbin[0][4].SetParameter(2, -0.000709856);
+   wbin[0][4].SetParameter(3,  2.09475e-06);
+   // PBE                     
+   wbin[0][5].SetParameter(0,     0.451228);
+   wbin[0][5].SetParameter(1,  -0.00432294);
+   wbin[0][5].SetParameter(2,  0.000330765);
+   wbin[0][5].SetParameter(3, -1.91195e-06);
+   
+   // bin 2
+   // ME
+   wbin[1][0].SetParameter(0,     -5.77745);
+   wbin[1][0].SetParameter(1,    0.0880766);
+   wbin[1][0].SetParameter(2, -0.000279371);
+   // PE                      
+   wbin[1][1].SetParameter(0,     -6.69575);
+   wbin[1][1].SetParameter(1,    0.0939525);
+   wbin[1][1].SetParameter(2, -0.000277546);
+   // MB                      
+   wbin[1][2].SetParameter(0,     0.933951);
+   wbin[1][2].SetParameter(1,  0.000433095);
+   // PB                      
+   wbin[1][3].SetParameter(0,     0.787343);
+   wbin[1][3].SetParameter(1,   0.00138429);
+   // MBE                     
+   wbin[1][4].SetParameter(0,     0.551883);
+   wbin[1][4].SetParameter(1,   0.00290096);
+   // PBE                     
+   wbin[1][5].SetParameter(0,     -3.57747);
+   wbin[1][5].SetParameter(1,    0.0522595);
+   wbin[1][5].SetParameter(2, -0.000141476);
+
+   
+   // bin 3
+   // ME
+   wbin[2][0].SetParameter(0,     -8.54811);    
+   wbin[2][0].SetParameter(1,    0.0657555);    
+   wbin[2][0].SetParameter(2, -0.000108932);   
+   // PE
+   wbin[2][1].SetParameter(0,     -8.56109);    
+   wbin[2][1].SetParameter(1,    0.0675469);    
+   wbin[2][1].SetParameter(2, -0.000115469);   
+   // MB
+   wbin[2][2].SetParameter(0,     -14.6869);    
+   wbin[2][2].SetParameter(1,     0.144514);    
+   wbin[2][2].SetParameter(2,  -0.00042885);    
+   wbin[2][2].SetParameter(3,   4.1285e-07);    
+   // PB
+   wbin[2][3].SetParameter(0,     -19.4593);    
+   wbin[2][3].SetParameter(1,     0.207611);    
+   wbin[2][3].SetParameter(2, -0.000696133);    
+   wbin[2][3].SetParameter(3,   7.7616e-07);    
+   // MBE
+   wbin[2][4].SetParameter(0,     -6.33536);    
+   wbin[2][4].SetParameter(1,    0.0508149);    
+   wbin[2][4].SetParameter(2, -8.48972e-05);    
+   // PBE
+   wbin[2][5].SetParameter(0,     -1.22657);    
+   wbin[2][5].SetParameter(1,     0.014491);    
+   wbin[2][5].SetParameter(2, -2.23136e-05);    
+   
+   // bin 4
+   // ME
+   wbin[3][0].SetParameter(0,     -17.8586);    
+   wbin[3][0].SetParameter(1,    0.0821032);    
+   wbin[3][0].SetParameter(2, -8.75879e-05);    
+   // PE
+   wbin[3][1].SetParameter(0,     -12.2956);    
+   wbin[3][1].SetParameter(1,    0.0592316);    
+   wbin[3][1].SetParameter(2, -6.51025e-05);   
+   // MB
+   wbin[3][2].SetParameter(0,     -63.9487);    
+   wbin[3][2].SetParameter(1,     0.415683);    
+   wbin[3][2].SetParameter(2, -0.000877524);    
+   wbin[3][2].SetParameter(3,  6.11425e-07);    
+   // PB
+   wbin[3][3].SetParameter(0,     -45.4686);    
+   wbin[3][3].SetParameter(1,     0.296697);    
+   wbin[3][3].SetParameter(2, -0.000625097);    
+   wbin[3][3].SetParameter(3,  4.34747e-07);    
+   // MBE
+   wbin[3][4].SetParameter(0,     -13.2135);    
+   wbin[3][4].SetParameter(1,    0.0600719);    
+   wbin[3][4].SetParameter(2, -6.19879e-05);    
+   // PBE
+   wbin[3][5].SetParameter(0,     -6.78826);    
+   wbin[3][5].SetParameter(1,    0.0312724);    
+   wbin[3][5].SetParameter(2, -3.01266e-05);    
+    
+   // bin 5
+   // ME
+   wbin[4][0].SetParameter(0,      2.87494);    
+   wbin[4][0].SetParameter(1,  -0.00335089);    
+   // PE
+   wbin[4][1].SetParameter(0,     0.814192);    
+   wbin[4][1].SetParameter(1,  5.22367e-05);    
+   // MB
+   wbin[4][2].SetParameter(0,      1.37201);    
+   wbin[4][2].SetParameter(1, -0.000662398);    
+   // PB
+   wbin[4][3].SetParameter(0,      1.66209);    
+   wbin[4][3].SetParameter(1,  -0.00118165);    
+   // MBE
+   wbin[4][4].SetParameter(0,      1.62254);    
+   wbin[4][4].SetParameter(1,   -0.0010949);    
+   // PBE
+   wbin[4][5].SetParameter(0,     -1.41377);    
+   wbin[4][5].SetParameter(1,   0.00865488);    
+   wbin[4][5].SetParameter(2, -7.59207e-06);    
+    
+   // reweight QCD
+   auto jets = ana.selectedJets();
+   float pt  = jets[1]->pt();  // tag jet index = 1; probe jet index = 0
+   float eta = jets[1]->eta();  // tag jet index = 1; probe jet index = 0
+   int eta_indx = -1;
+   if ( eta < -1.4 )               eta_indx = 0;
+   if ( eta >  1.4 )               eta_indx = 1;
+   if ( eta > -1.0 && eta <  0.0 ) eta_indx = 2; 
+   if ( eta <  1.0 && eta >  0.0 ) eta_indx = 3; 
+   if ( eta > -1.4 && eta < -1.0 ) eta_indx = 4;
+   if ( eta <  1.4 && eta >  1.0 ) eta_indx = 5;
+
+   int windex = ana.config()->index()-1;
+   float myweight = 1;
+   myweight = ana.weight()*(wbin[windex][eta_indx].Eval(pt));
+   
+   ana.weight(myweight);
+   
+   hcut -> Fill(cut,myweight);
+   ana.cutflow(cut);
+}
+
+
+// ================================
+void reweightQCDtoDataCDE(OnlineBtagAnalyser & ana)
 {
    if ( ! ana.config()->isMC() ) return;
    if ( ana.config()->index() < 1 ) return;
@@ -248,175 +459,177 @@ void reweightQCDtoDataEta(OnlineBtagAnalyser & ana)
    
    // reweights for 2017 era F to match 2017 eras C+D+E
    TF1 wbin[6][6];
-   // bin1
+   // bin1 §
    wbin[0][0] = TF1("w_bin1_me" ,"pol2(0)",0,1500);  // eta ME
    wbin[0][1] = TF1("w_bin1_pe" ,"pol2(0)",0,1500);  // eta PE
    wbin[0][2] = TF1("w_bin1_mb" ,"pol2(0)",0,1500);  // eta MB
    wbin[0][3] = TF1("w_bin1_pb" ,"pol2(0)",0,1500);  // eta PB
    wbin[0][4] = TF1("w_bin1_mbe","pol2(0)",0,1500);  // eta MBE
    wbin[0][5] = TF1("w_bin1_pbe","pol2(0)",0,1500);  // eta PBE
-   // bin2
+   // bin2  §
    wbin[1][0] = TF1("w_bin2_me" ,"pol2(0)",0,1500);  // eta ME
-   wbin[1][1] = TF1("w_bin2_pe" ,"pol2(0)",0,1500);  // eta PE
-   wbin[1][2] = TF1("w_bin2_mb" ,"[0]",0,1500);  // eta MB
-   wbin[1][3] = TF1("w_bin2_pb" ,"[0]",0,1500);  // eta PB
-   wbin[1][4] = TF1("w_bin2_mbe","[0]",0,1500);  // eta MBE
+   wbin[1][1] = TF1("w_bin2_pe" ,"pol3(0)",0,1500);  // eta PE
+   wbin[1][2] = TF1("w_bin2_mb" ,"pol2(0)",0,1500);  // eta MB
+   wbin[1][3] = TF1("w_bin2_pb" ,"pol2(0)",0,1500);  // eta PB
+   wbin[1][4] = TF1("w_bin2_mbe","pol2(0)",0,1500);  // eta MBE
    wbin[1][5] = TF1("w_bin2_pbe","pol2(0)",0,1500);  // eta PBE
-   // bin3
-   wbin[2][0] = TF1("w_bin3_me" ,"pol2(0)",0,1500);  // eta ME
-   wbin[2][1] = TF1("w_bin3_pe" ,"pol2(0)",0,1500);  // eta PE
-   wbin[2][2] = TF1("w_bin3_mb" ,"[0]",0,1500);  // eta MB
-   wbin[2][3] = TF1("w_bin3_pb" ,"[0]",0,1500);  // eta PB
-   wbin[2][4] = TF1("w_bin3_mbe","[0]",0,1500);  // eta MBE
-   wbin[2][5] = TF1("w_bin3_pbe","[0]",0,1500);  // eta PBE
-   // bin4
-   wbin[3][0] = TF1("w_bin4_me" ,"pol2(0)",0,1500);  // eta ME
+   // bin3  §
+   wbin[2][0] = TF1("w_bin3_me" ,"pol3(0)",0,1500);  // eta ME
+   wbin[2][1] = TF1("w_bin3_pe" ,"pol3(0)",0,1500);  // eta PE
+   wbin[2][2] = TF1("w_bin3_mb" ,"pol3(0)",0,1500);  // eta MB
+   wbin[2][3] = TF1("w_bin3_pb" ,"pol3(0)",0,1500);  // eta PB
+   wbin[2][4] = TF1("w_bin3_mbe","pol2(0)",0,1500);  // eta MBE
+   wbin[2][5] = TF1("w_bin3_pbe","expo+pol2(2)",0,1500);  // eta PBE
+   // bin4  §
+   wbin[3][0] = TF1("w_bin4_me" ,"pol1(0)",0,1500);  // eta ME
    wbin[3][1] = TF1("w_bin4_pe" ,"pol2(0)",0,1500);  // eta PE
-   wbin[3][2] = TF1("w_bin4_mb" ,"[0]",0,1500);  // eta MB
-   wbin[3][3] = TF1("w_bin4_pb" ,"[0]",0,1500);  // eta PB
+   wbin[3][2] = TF1("w_bin4_mb" ,"pol2(0)",0,1500);  // eta MB
+   wbin[3][3] = TF1("w_bin4_pb" ,"pol2(0)",0,1500);  // eta PB
    wbin[3][4] = TF1("w_bin4_mbe","pol1(0)",0,1500);  // eta MBE
-   wbin[3][5] = TF1("w_bin4_pbe","[0]",0,1500);  // eta PBE
-   // bin5
+   wbin[3][5] = TF1("w_bin4_pbe","pol3(0)",0,1500);  // eta PBE
+   // bin5  §
    wbin[4][0] = TF1("w_bin5_me" ,"pol1(0)",0,1500);  // eta ME
    wbin[4][1] = TF1("w_bin5_pe" ,"pol1(0)",0,1500);  // eta PE
    wbin[4][2] = TF1("w_bin5_mb" ,"pol1(0)",0,1500);  // eta MB
    wbin[4][3] = TF1("w_bin5_pb" ,"pol1(0)",0,1500);  // eta PB
-   wbin[4][4] = TF1("w_bin5_mbe","pol2(0)",0,1500);  // eta MBE
-   wbin[4][5] = TF1("w_bin5_pbe","pol2(0)",0,1500);  // eta PBE
-   // bin6
-   wbin[5][0] = TF1("w_bin6_me" ,"pol1(0)",0,1500);  // eta ME
-   wbin[5][1] = TF1("w_bin6_pe" ,"pol1(0)",0,1500);  // eta PE
-   wbin[5][2] = TF1("w_bin6_mb" ,"pol1(0)",0,1500);  // eta MB
-   wbin[5][3] = TF1("w_bin6_pb" ,"pol1(0)",0,1500);  // eta PB
-   wbin[5][4] = TF1("w_bin6_mbe","pol1(0)",0,1500);  // eta MBE
-   wbin[5][5] = TF1("w_bin6_pbe","pol1(0)",0,1500);  // eta PBE
+   wbin[4][4] = TF1("w_bin5_mbe","pol3(0)",0,1500);  // eta MBE
+   wbin[4][5] = TF1("w_bin5_pbe","pol3(0)",0,1500);  // eta PBE
    
    
    // parameters
    // bin 1
    // ME
-   wbin[0][0].SetParameter(0,-2.37E-1);    
-   wbin[0][0].SetParameter(1, 2.95E-2);    
-   wbin[0][0].SetParameter(2,-1.49E-4);   
+   wbin[0][0].SetParameter(0,-0.0652574);    
+   wbin[0][0].SetParameter(1, 0.0229375);    
+   wbin[0][0].SetParameter(2,-9.23584e-05);   //
    // PE
-   wbin[0][1].SetParameter(0,-1.90E-1);    
-   wbin[0][1].SetParameter(1, 2.71E-2);    
-   wbin[0][1].SetParameter(2,-1.25E-4);   
+   wbin[0][1].SetParameter(0,-0.50297);    
+   wbin[0][1].SetParameter(1, 0.0342216);    
+   wbin[0][1].SetParameter(2,-0.000155978);   //
    // MB
-   wbin[0][2].SetParameter(0, 4.15E-1);    
-   wbin[0][2].SetParameter(1, 1.31E-2);    
-   wbin[0][2].SetParameter(2,-5.71E-5);   
+   wbin[0][2].SetParameter(0, 0.257993);    
+   wbin[0][2].SetParameter(1, 0.0165364);    
+   wbin[0][2].SetParameter(2,-6.99772e-05);   //
    // PB
-   wbin[0][3].SetParameter(0, 3.29E-1);    
-   wbin[0][3].SetParameter(1, 1.52E-2);    
-   wbin[0][3].SetParameter(2,-6.66E-5);   
+   wbin[0][3].SetParameter(0, 0.282757);    
+   wbin[0][3].SetParameter(1, 0.0160886);    
+   wbin[0][3].SetParameter(2,-6.94073e-05);  // 
    // MBE
-   wbin[0][4].SetParameter(0, 2.02E-1);    
-   wbin[0][4].SetParameter(1, 1.80E-2);    
-   wbin[0][4].SetParameter(2,-7.75E-5);   
+   wbin[0][4].SetParameter(0, 0.0153423);    
+   wbin[0][4].SetParameter(1, 0.0232781);    
+   wbin[0][4].SetParameter(2,-0.000110542);   //
    // PBE
-   wbin[0][5].SetParameter(0, 2.60E-1);    
-   wbin[0][5].SetParameter(1, 1.69E-2);    
-   wbin[0][5].SetParameter(2,-7.61E-5);   
+   wbin[0][5].SetParameter(0,-0.0344957);    
+   wbin[0][5].SetParameter(1, 0.022747);    
+   wbin[0][5].SetParameter(2,-9.22252e-05);   //
    
    // bin 2
    // ME
-   wbin[1][0].SetParameter(0,-1.83E0);    
-   wbin[1][0].SetParameter(1, 3.75E-2);    
-   wbin[1][0].SetParameter(2,-1.21E-4);   
+   wbin[1][0].SetParameter(0,-2.06559);    
+   wbin[1][0].SetParameter(1, 0.0397254);    
+   wbin[1][0].SetParameter(2,-0.000125515);  // 
    // PE
-   wbin[1][1].SetParameter(0,-2.00E0);    
-   wbin[1][1].SetParameter(1, 3.88E-2);    
-   wbin[1][1].SetParameter(2,-1.23E-4);   
+   wbin[1][1].SetParameter(0,-27.7487);    
+   wbin[1][1].SetParameter(1, 0.565529);    
+   wbin[1][1].SetParameter(2,-0.00364953);   
+   wbin[1][1].SetParameter(3, 7.72979e-06);   //
    // MB
-   wbin[1][2].SetParameter(0, 1.);    
+   wbin[1][2].SetParameter(0,-1.42803);    
+   wbin[1][2].SetParameter(1, 0.0313777);    
+   wbin[1][2].SetParameter(2,-9.909e-05);   //
    // PB
-   wbin[1][3].SetParameter(0, 1.);    
+   wbin[1][3].SetParameter(0,-0.236463);    
+   wbin[1][3].SetParameter(1, 0.0159934);    
+   wbin[1][3].SetParameter(2,-5.05555e-05);   //
    // MBE
-   wbin[1][4].SetParameter(0, 1.);    
+   wbin[1][4].SetParameter(0, 1.47188);    
+   wbin[1][4].SetParameter(1,-0.00388074);    
+   wbin[1][4].SetParameter(2, 4.9006e-06);   //
    // PBE
-   wbin[1][5].SetParameter(0,-15.7E-1);    
-   wbin[1][5].SetParameter(1, 3.28E-2);    
-   wbin[1][5].SetParameter(2,-1.02E-4);  
+   wbin[1][5].SetParameter(0,-0.820059);    
+   wbin[1][5].SetParameter(1, 0.0230815);    
+   wbin[1][5].SetParameter(2,-7.16513e-05);  //
    
    // bin 3
    // ME
-   wbin[2][0].SetParameter(0,-2.84E0);    
-   wbin[2][0].SetParameter(1, 2.68E-2);    
-   wbin[2][0].SetParameter(2,-4.52E-5);   
+   wbin[2][0].SetParameter(0,     5.73088);    
+   wbin[2][0].SetParameter(1,  -0.0642435);    
+   wbin[2][0].SetParameter(2, 0.000271238);   
+   wbin[2][0].SetParameter(3, -3.5903e-07);   
    // PE
-   wbin[2][1].SetParameter(0,-2.42E0);    
-   wbin[2][1].SetParameter(1, 2.51E-2);    
-   wbin[2][1].SetParameter(2,-4.48E-5);   
+   wbin[2][1].SetParameter(0,     -20.4788);    
+   wbin[2][1].SetParameter(1,     0.213145);    
+   wbin[2][1].SetParameter(2, -0.000686299);   
+   wbin[2][1].SetParameter(3,  7.17865e-07);   
    // MB
-   wbin[2][2].SetParameter(0, 1.);    
+   wbin[2][2].SetParameter(0,     -4.63744);    
+   wbin[2][2].SetParameter(1,    0.0563069);    
+   wbin[2][2].SetParameter(2, -0.000181273);    
+   wbin[2][2].SetParameter(3,  1.87502e-07);    
    // PB
-   wbin[2][3].SetParameter(0, 1.);    
+   wbin[2][3].SetParameter(0,     -9.06343);    
+   wbin[2][3].SetParameter(1,     0.102401);    
+   wbin[2][3].SetParameter(2, -0.000339927);    
+   wbin[2][3].SetParameter(3,  3.68722e-07);    
    // MBE
-   wbin[2][4].SetParameter(0, 1.);    
+   wbin[2][4].SetParameter(0,    0.580237);    
+   wbin[2][4].SetParameter(1,  0.00263568);    
+   wbin[2][4].SetParameter(2, -3.8462e-06);    
    // PBE
-   wbin[2][5].SetParameter(0, 1.);    
+   wbin[2][5].SetParameter(0,    -0.834244);    
+   wbin[2][5].SetParameter(1,   0.00802932);    
+   wbin[2][5].SetParameter(2,     -7.39069);    
+   wbin[2][5].SetParameter(3,    0.0648124);    
+   wbin[2][5].SetParameter(4, -0.000175776);    
    
    // bin 4
    // ME
-   wbin[3][0].SetParameter(0, 3.98E0);    
-   wbin[3][0].SetParameter(1,-1.50E-2);    
-   wbin[3][0].SetParameter(2, 1.85E-5);   
+   wbin[3][0].SetParameter(0,    0.962966);    
+   wbin[3][0].SetParameter(1, 1.66378e-05);    
    // PE
-   wbin[3][1].SetParameter(0,-3.84E0);    
-   wbin[3][1].SetParameter(1, 2.13E-2);    
-   wbin[3][1].SetParameter(2,-2.30E-5);   
+   wbin[3][1].SetParameter(0,     -7.81981);    
+   wbin[3][1].SetParameter(1,    0.0396127);    
+   wbin[3][1].SetParameter(2, -4.39654e-05);   
    // MB
-   wbin[3][2].SetParameter(0, 1.);    
+   wbin[3][2].SetParameter(0,     -1.75287);    
+   wbin[3][2].SetParameter(1,    0.0122508);    
+   wbin[3][2].SetParameter(2, -1.34238e-05);    
    // PB
-   wbin[3][3].SetParameter(0, 1.);    
+   wbin[3][3].SetParameter(0,     -2.78444);    
+   wbin[3][3].SetParameter(1,    0.0172846);    
+   wbin[3][3].SetParameter(2, -1.94909e-05);    
    // MBE
-   wbin[3][4].SetParameter(0, 1.51E0);    
-   wbin[3][4].SetParameter(1,-1.19E-3);    
+   wbin[3][4].SetParameter(0,     1.81482);    
+   wbin[3][4].SetParameter(1, -0.00190951);    
    // PBE
-   wbin[3][5].SetParameter(0, 1.);    
+   wbin[3][5].SetParameter(0,     -34.9409);    
+   wbin[3][5].SetParameter(1,     0.233191);    
+   wbin[3][5].SetParameter(2, -0.000499361);    
+   wbin[3][5].SetParameter(3,  3.52979e-07);    
     
    // bin 5
    // ME
-   wbin[4][0].SetParameter(0, 2.66E0);    
-   wbin[4][0].SetParameter(1,-2.98E-3);    
+   wbin[4][0].SetParameter(0,     2.60688);    
+   wbin[4][0].SetParameter(1, -0.00292853);    
    // PE
-   wbin[4][1].SetParameter(0, 1.74E0);    
-   wbin[4][1].SetParameter(1,-1.37E-3);    
+   wbin[4][1].SetParameter(0,      1.6879);    
+   wbin[4][1].SetParameter(1, -0.00137564);    
    // MB
-   wbin[4][2].SetParameter(0, 1.29E0);    
-   wbin[4][2].SetParameter(1,-5.28E-4);    
+   wbin[4][2].SetParameter(0,      1.10502);    
+   wbin[4][2].SetParameter(1, -0.000207952);    
    // PB
-   wbin[4][3].SetParameter(0, 1.45E0);    
-   wbin[4][3].SetParameter(1,-8.20E-4);    
+   wbin[4][3].SetParameter(0,      1.25404);    
+   wbin[4][3].SetParameter(1, -0.000475007);    
    // MBE
-   wbin[4][4].SetParameter(0, 4.75E0);    
-   wbin[4][4].SetParameter(1,-1.17E-2);    
-   wbin[4][4].SetParameter(2, 8.77E-6);    
+   wbin[4][4].SetParameter(0,      22.8689);    
+   wbin[4][4].SetParameter(1,    -0.107603);    
+   wbin[4][4].SetParameter(2,  0.000175844);    
+   wbin[4][4].SetParameter(3, -9.59547e-08);    
    // PBE
-   wbin[4][5].SetParameter(0,-4.09E0);    
-   wbin[4][5].SetParameter(1, 1.72E-2);    
-   wbin[4][5].SetParameter(2,-1.42E-5);    
-    
-   // bin 6
-   // ME
-   wbin[5][0].SetParameter(0, 2.55E0);    
-   wbin[5][0].SetParameter(1,-2.17E-3);    
-   // PE
-   wbin[5][1].SetParameter(0, 2.93E0);    
-   wbin[5][1].SetParameter(1,-2.75E-3);    
-   // MB
-   wbin[5][2].SetParameter(0, 1.59E0);    
-   wbin[5][2].SetParameter(1,-8.41E-4);    
-   // PB
-   wbin[5][3].SetParameter(0, 1.59E0);    
-   wbin[5][3].SetParameter(1,-8.01E-4);    
-   // MBE
-   wbin[5][4].SetParameter(0, 1.26E0);    
-   wbin[5][4].SetParameter(1,-3.72E-4);    
-   // PBE
-   wbin[5][5].SetParameter(0, 5.32E-1);    
-   wbin[5][5].SetParameter(1, 7.13E-4);    
+   wbin[4][5].SetParameter(0,      26.1834);    
+   wbin[4][5].SetParameter(1,    -0.141815);    
+   wbin[4][5].SetParameter(2,  0.000259597);    
+   wbin[4][5].SetParameter(3, -1.54514e-07);    
     
    // reweight QCD
    auto jets = ana.selectedJets();
