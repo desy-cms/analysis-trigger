@@ -1,4 +1,4 @@
-#include "Analysis/MssmHbb/interface/JetTriggerAnalyser.h"
+#include "Analysis/Trigger/interface/JetTriggerAnalyser.h"
 
 using namespace analysis;
 using namespace analysis::tools;
