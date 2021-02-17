@@ -15,7 +15,7 @@
 #include <iostream>
 // 
 // user include files
-#include "Analysis/MssmHbb/interface/JetTriggerAnalyser.h"
+#include "Analysis/Trigger/interface/JetTriggerAnalyser.h"
 #include "Analysis/Tools/interface/Composite.h"
 
 
@@ -38,12 +38,8 @@ JetTriggerAnalyser::JetTriggerAnalyser(int argc, char ** argv) : BaseAnalyser(ar
 {
 
    this->output()->cd();
-   /*this->output()->mkdir("histogramsJKTE");
-   this->output()->cd("histogramsJKTE");
-
-   h1_["NumeratorJKTE"] = std::make_shared<TH1F>("NumeratorJKTE","Probes with matching", 30,0,300);
-   h1_["ProbesJKTE"] = std::make_shared<TH1F>("ProbesJKTE","Probes", 30,0,300);
-   h1_["JKTE"] = std::make_shared<TH1F>("JKTE","Jet Kinematic Trigger Efficiency", 30,0,300);*/
+   this->jetHistograms(config_->nJetsMin(),"Probes with matching");
+   this->jetHistograms(config_->nJetsMin(),"Probes");
 
    this->jetHistograms(config_->nJetsMin(),"Probes with matching 0<n<1");
    this->jetHistograms(config_->nJetsMin(),"Probes 0<n<1");
@@ -59,7 +55,6 @@ JetTriggerAnalyser::~JetTriggerAnalyser()
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
    
-   //if ( do_tree_ ) mssmhbb_tree_ -> Write();
 }
 
 
@@ -105,61 +100,36 @@ void JetTriggerAnalyser::jetKTEtagandprobeSelection()
     // kinematics selection
     if ( ! this->selectionJet(1)          )   return;
     if ( ! this->onlineJetMatching(1)     )   return;
+    if ( ! this->selectionJet(2)          )   return;
     
-    //this->fillJetHistograms("Probes");
+    this->fillJetHistograms("Probes");
      
-    if (selectedJets_[1]->eta()>0 && selectedJets_[1]->eta()<=1.)
+    if (fabs(selectedJets_[1]->eta())>0 && fabs(selectedJets_[1]->eta())<=1.)
     this->fillJetHistograms("Probes 0<n<1");
-    if (selectedJets_[1]->eta()>1. && selectedJets_[1]->eta()<=1.4)
+    if (fabs(selectedJets_[1]->eta())>1. && fabs(selectedJets_[1]->eta())<=1.4)
     this->fillJetHistograms("Probes 1<n<1.4");
-    if (selectedJets_[1]->eta()>1.4 && selectedJets_[1]->eta()<=2.2)
+    if (fabs(selectedJets_[1]->eta())>1.4 && fabs(selectedJets_[1]->eta())<=2.2)
     this->fillJetHistograms("Probes 1.4<n<2.2");
     
-/*
-    this->output()->cd();
-    this->output()->cd("histogramsJKTE");     
-    h1_["ProbesJKTE"] -> Fill(selectedJets_[1]->pt()); 
-*/
 
     // kinematics selection for numerator
-    if ( ! this->selectionJet(2)          )   return;
     if ( ! this->onlineJetMatching(2)     )   return;
 
     //now fill numerator histogram
     
-    //this->fillJetHistograms("Probes with matching");
+    this->fillJetHistograms("Probes with matching");
 
-     
-    if (selectedJets_[1]->eta()>0 && selectedJets_[1]->eta()<=1.)
+    if (fabs(selectedJets_[1]->eta())>0 && fabs(selectedJets_[1]->eta())<=1.)
     this->fillJetHistograms("Probes with matching 0<n<1");
-    if (selectedJets_[1]->eta()>1. && selectedJets_[1]->eta()<=1.4)
+    if (fabs(selectedJets_[1]->eta())>1. && fabs(selectedJets_[1]->eta())<=1.4)
     this->fillJetHistograms("Probes with matching 1<n<1.4");
-    if (selectedJets_[1]->eta()>1.4 && selectedJets_[1]->eta()<=2.2)
+    if (fabs(selectedJets_[1]->eta())>1.4 && fabs(selectedJets_[1]->eta())<=2.2)
     this->fillJetHistograms("Probes with matching 1.4<n<2.2");
     
-/*
-    this->output()->cd();
-    this->output()->cd("histogramsJKTE");
-    h1_["NumeratorJKTE"] -> Fill(selectedJets_[1]->pt());
-*/
 
     return;
 }
 
-
-/*void JetTriggerAnalyser::jetKTE()
-{
-      // fill Jet Kinematic Trigger Efficiency Histograms
-   // this->output()->cd();
-   // this->output()->cd("histogramsJKTE");
-    
-    //h1_["JKTE"]->Divide(h1_["NumeratorJKTE"].get(),h1_["ProbesJKTE"].get(), 1,1,"B" );
-    //TGraphAsymmErrors * g_eff = new TGraphAsymmErrors(h1_["NumeratorJKTE"].get(),h1_["ProbesJKTE"].get(),"cl=0.683 b(1,1) mode");
-    //h1_["JKTE"]=g_eff.get();
-
-
-    return;
-}*/
 
 
 
