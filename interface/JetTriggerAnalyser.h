@@ -1,5 +1,7 @@
-#ifndef Analysis_MssmHbb_MssmHbbAnalyser_h
-#define Analysis_MssmHbb_MssmHbbAnalyser_h 1
+//#ifndef Analysis_MssmHbb_MssmHbbAnalyser_h
+//#define Analysis_MssmHbb_MssmHbbAnalyser_h 1
+#ifndef Analysis_Trigger_JetTriggerAnalyser_h
+#define Analysis_Trigger_JetTriggerAnalyser_h 1
 
 // -*- C++ -*-
 //
@@ -47,14 +49,8 @@ namespace analysis {
             void CreateHistograms();
             bool jetKTEfirstSelection();
             void jetKTEtagandprobeSelection();
-           // void jetKTE();
-           // bool btagSelection();
             // ----------member data ---------------------------
          protected:
-          /*  bool do_tree_;
-            std::shared_ptr<TTree> mssmhbb_tree_;
-            double mbb_;
-            double mbbw_;*/
                
          private:
                
@@ -63,4 +59,4 @@ namespace analysis {
    }
 }
 
-#endif  // Analysis_MssmHbb_MssmHbbAnalyser_h
+#endif  
