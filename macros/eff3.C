@@ -1,10 +1,10 @@
 TGraphAsymmErrors* DivideTGraphsErrors(TGraphAsymmErrors* A, TGraphAsymmErrors* B);
 double ErrorDivision(double ea, double eb, double ValueA, double ValueB);
 
-int eff()
+int eff3()
 {
 
-// USE THIS MACRO TO PLOT THE JET KINEMATIC TRIGGER EFFICIENCY FOR ALL ETA VALUES STATED IN THE CONFIGURATION FILE
+// USE THIS MACRO TO PLOT THE JET KINEMATIC TRIGGER EFFICIENCY FOR ETA VALUES FROM 1.4 TO 2.2, CORRESPONDING TO THE ENDCAP REGION
    auto C = new TCanvas("C","Canvas",1000,1000);
    C -> Divide (1,2);
 
@@ -16,9 +16,9 @@ int eff()
    // open the root file corresponding to Data
    TFile * fDATA = new TFile("myData.root");
    // get denominator histograms
-   TH1F * h_denominatorDATA = (TH1F*) fDATA -> Get("Probes/pt_jet2");
+   TH1F * h_denominatorDATA = (TH1F*) fDATA -> Get("Probes 1.4<n<2.2/pt_jet2");
    // get numerator histograms
-   TH1F * h_numeratorDATA  = (TH1F*) fDATA -> Get("Probes with matching/pt_jet2");
+   TH1F * h_numeratorDATA  = (TH1F*) fDATA -> Get("Probes with matching 1.4<n<2.2/pt_jet2");
 
    // Rebinning
    h_denominatorDATA -> Rebin(10);
@@ -42,8 +42,8 @@ int eff()
    // open the root file corresponding to HT100to200
    TFile * f1 = new TFile("my1.root");
    // get denominator and denominator histograms for total
-   TH1F * h_numerator1  = (TH1F*) f1 -> Get("Probes with matching/pt_jet2");
-   TH1F * h_denominator1 = (TH1F*) f1 -> Get("Probes/pt_jet2");
+   TH1F * h_numerator1  = (TH1F*) f1 -> Get("Probes with matching 1.4<n<2.2/pt_jet2");
+   TH1F * h_denominator1 = (TH1F*) f1 -> Get("Probes 1.4<n<2.2/pt_jet2");
    //get parameters
    Double_t Cross_section_1= 23700000;
    TH1F * Workflow1 = (TH1F*) f1 -> Get("workflow;1/Workflow #1");
@@ -56,8 +56,8 @@ int eff()
    // open the root file corresponding to HT200to300
    TFile * f2 = new TFile("my2.root");
    // get denominator and denominator histograms for total
-   TH1F * h_numerator2  = (TH1F*) f2 -> Get("Probes with matching/pt_jet2");
-   TH1F * h_denominator2 = (TH1F*) f2 -> Get("Probes/pt_jet2");
+   TH1F * h_numerator2  = (TH1F*) f2 -> Get("Probes with matching 1.4<n<2.2/pt_jet2");
+   TH1F * h_denominator2 = (TH1F*) f2 -> Get("Probes 1.4<n<2.2/pt_jet2");
    //get parameters
    Double_t Cross_section_2= 1547000;
    TH1F * Workflow2 = (TH1F*) f2 -> Get("workflow;1/Workflow #1");
@@ -69,8 +69,8 @@ int eff()
    // open the root file corresponding to HT300to500
    TFile * f3 = new TFile("my3.root");
    // get denominator and denominator histograms for total
-   TH1F * h_numerator3  = (TH1F*) f3 -> Get("Probes with matching/pt_jet2");
-   TH1F * h_denominator3 = (TH1F*) f3 -> Get("Probes/pt_jet2");
+   TH1F * h_numerator3  = (TH1F*) f3 -> Get("Probes with matching 1.4<n<2.2/pt_jet2");
+   TH1F * h_denominator3 = (TH1F*) f3 -> Get("Probes 1.4<n<2.2/pt_jet2");
    //get parameters
    Double_t Cross_section_3= 322600;
    TH1F * Workflow3 = (TH1F*) f3 -> Get("workflow;1/Workflow #1");
@@ -82,8 +82,8 @@ int eff()
    // open the root file corresponding to HT500to700
    TFile * f4 = new TFile("my4.root");
    // get denominator and denominator histograms for total
-   TH1F * h_numerator4  = (TH1F*) f4 -> Get("Probes with matching/pt_jet2");
-   TH1F * h_denominator4 = (TH1F*) f4 -> Get("Probes/pt_jet2");   
+   TH1F * h_numerator4  = (TH1F*) f4 -> Get("Probes with matching 1.4<n<2.2/pt_jet2");
+   TH1F * h_denominator4 = (TH1F*) f4 -> Get("Probes 1.4<n<2.2/pt_jet2");   
    //get parameters
    Double_t Cross_section_4= 29980;
    TH1F * Workflow4 = (TH1F*) f4 -> Get("workflow;1/Workflow #1");
@@ -95,8 +95,8 @@ int eff()
    // open the root file corresponding to HT700to1000
    TFile * f5 = new TFile("my5.root");
    // get denominator and denominator histograms for total
-   TH1F * h_numerator5  = (TH1F*) f5 -> Get("Probes with matching/pt_jet2");
-   TH1F * h_denominator5 = (TH1F*) f5 -> Get("Probes/pt_jet2");
+   TH1F * h_numerator5  = (TH1F*) f5 -> Get("Probes with matching 1.4<n<2.2/pt_jet2");
+   TH1F * h_denominator5 = (TH1F*) f5 -> Get("Probes 1.4<n<2.2/pt_jet2");
    // get denominator histograms
    //get parameters
    Double_t Cross_section_5= 6334;
@@ -109,8 +109,8 @@ int eff()
    // open the root file corresponding to HT1000to1500
    TFile * f6 = new TFile("my6.root");
    // get denominator and denominator histograms for total
-   TH1F * h_numerator6  = (TH1F*) f6 -> Get("Probes with matching/pt_jet2");
-   TH1F * h_denominator6 = (TH1F*) f6 -> Get("Probes/pt_jet2");
+   TH1F * h_numerator6  = (TH1F*) f6 -> Get("Probes with matching 1.4<n<2.2/pt_jet2");
+   TH1F * h_denominator6 = (TH1F*) f6 -> Get("Probes 1.4<n<2.2/pt_jet2");
    //get parameters
    Double_t Cross_section_6= 1088;
    TH1F * Workflow6 = (TH1F*) f6 -> Get("workflow;1/Workflow #1");
@@ -122,8 +122,8 @@ int eff()
    // open the root file corresponding to HT1500to2000
    TFile * f7 = new TFile("my7.root");
    // get denominator and denominator histograms for total
-   TH1F * h_numerator7  = (TH1F*) f7 -> Get("Probes with matching/pt_jet2");
-   TH1F * h_denominator7 = (TH1F*) f7 -> Get("Probes/pt_jet2");
+   TH1F * h_numerator7  = (TH1F*) f7 -> Get("Probes with matching 1.4<n<2.2/pt_jet2");
+   TH1F * h_denominator7 = (TH1F*) f7 -> Get("Probes 1.4<n<2.2/pt_jet2");
    //get parameters
    Double_t Cross_section_7= 99.11;
    TH1F * Workflow7 = (TH1F*) f7 -> Get("workflow;1/Workflow #1");
@@ -135,8 +135,8 @@ int eff()
    // open the root file corresponding to HT2000toInf
    TFile * f8 = new TFile("my8.root");
    // get denominator and denominator histograms for total
-   TH1F * h_numerator8  = (TH1F*) f8 -> Get("Probes with matching/pt_jet2");
-   TH1F * h_denominator8 = (TH1F*) f8 -> Get("Probes/pt_jet2");
+   TH1F * h_numerator8  = (TH1F*) f8 -> Get("Probes with matching 1.4<n<2.2/pt_jet2");
+   TH1F * h_denominator8 = (TH1F*) f8 -> Get("Probes 1.4<n<2.2/pt_jet2");
    //get parameters
    Double_t Cross_section_8= 20.23;
    TH1F * Workflow8 = (TH1F*) f8 -> Get("workflow;1/Workflow #1");
@@ -203,7 +203,7 @@ int eff()
    //Drawing the two JKTE in a same pad
    C -> cd(1);
    TMultiGraph *mg = new TMultiGraph();
-   mg->SetTitle("Jet Kinematic Trigger Efficiency");
+   mg->SetTitle("Jet Kinematic Trigger Efficiency 1.4<|#eta|<2.2");
    mg->Add(g_effDATA);
    mg->Add(g_effMC);
    mg->GetHistogram()->GetYaxis()->SetRangeUser(0,1.1);
@@ -281,10 +281,5 @@ TGraphAsymmErrors* DivideTGraphsErrors(TGraphAsymmErrors* A, TGraphAsymmErrors* 
     return result;
 
 }
-
-
-
-
-
 
 
