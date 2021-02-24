@@ -25,7 +25,7 @@
 
 using namespace analysis;
 using namespace analysis::tools;
-using namespace analysis::JTA;
+using namespace analysis::trigger;
 
 //
 // constructors and destructor
@@ -38,16 +38,6 @@ JetTriggerAnalyser::JetTriggerAnalyser(int argc, char ** argv) : BaseAnalyser(ar
 {
 
    this->output()->cd();
-   this->jetHistograms(config_->nJetsMin(),"Probes with matching");
-   this->jetHistograms(config_->nJetsMin(),"Probes");
-
-   this->jetHistograms(config_->nJetsMin(),"Probes with matching 0<n<1");
-   this->jetHistograms(config_->nJetsMin(),"Probes 0<n<1");
-   this->jetHistograms(config_->nJetsMin(),"Probes with matching 1<n<1.4");
-   this->jetHistograms(config_->nJetsMin(),"Probes 1<n<1.4");
-   this->jetHistograms(config_->nJetsMin(),"Probes with matching 1.4<n<2.2");
-   this->jetHistograms(config_->nJetsMin(),"Probes 1.4<n<2.2");
-
 }
 
 JetTriggerAnalyser::~JetTriggerAnalyser()
@@ -97,20 +87,12 @@ bool JetTriggerAnalyser::jetKTEfirstSelection()
 
 void JetTriggerAnalyser::jetKTEtagandprobeSelection()
 {
-    // kinematics selection
+    // kinematics selection for denominator
     if ( ! this->selectionJet(1)          )   return;
     if ( ! this->onlineJetMatching(1)     )   return;
     if ( ! this->selectionJet(2)          )   return;
     
     this->fillJetHistograms("Probes");
-     
-    if (fabs(selectedJets_[1]->eta())>0 && fabs(selectedJets_[1]->eta())<=1.)
-    this->fillJetHistograms("Probes 0<n<1");
-    if (fabs(selectedJets_[1]->eta())>1. && fabs(selectedJets_[1]->eta())<=1.4)
-    this->fillJetHistograms("Probes 1<n<1.4");
-    if (fabs(selectedJets_[1]->eta())>1.4 && fabs(selectedJets_[1]->eta())<=2.2)
-    this->fillJetHistograms("Probes 1.4<n<2.2");
-    
 
     // kinematics selection for numerator
     if ( ! this->onlineJetMatching(2)     )   return;
@@ -118,14 +100,6 @@ void JetTriggerAnalyser::jetKTEtagandprobeSelection()
     //now fill numerator histogram
     
     this->fillJetHistograms("Probes with matching");
-
-    if (fabs(selectedJets_[1]->eta())>0 && fabs(selectedJets_[1]->eta())<=1.)
-    this->fillJetHistograms("Probes with matching 0<n<1");
-    if (fabs(selectedJets_[1]->eta())>1. && fabs(selectedJets_[1]->eta())<=1.4)
-    this->fillJetHistograms("Probes with matching 1<n<1.4");
-    if (fabs(selectedJets_[1]->eta())>1.4 && fabs(selectedJets_[1]->eta())<=2.2)
-    this->fillJetHistograms("Probes with matching 1.4<n<2.2");
-    
 
     return;
 }
