@@ -1,5 +1,3 @@
-//#ifndef Analysis_MssmHbb_MssmHbbAnalyser_h
-//#define Analysis_MssmHbb_MssmHbbAnalyser_h 1
 #ifndef Analysis_Trigger_JetTriggerAnalyser_h
 #define Analysis_Trigger_JetTriggerAnalyser_h 1
 
@@ -35,7 +33,7 @@
 //
 
 namespace analysis {
-   namespace JTA {
+   namespace trigger {
 
       class JetTriggerAnalyser : public analysis::tools::Analyser {
          
@@ -46,7 +44,6 @@ namespace analysis {
         
            
             virtual bool event(const int &i);
-            void CreateHistograms();
             bool jetKTEfirstSelection();
             void jetKTEtagandprobeSelection();
             // ----------member data ---------------------------
