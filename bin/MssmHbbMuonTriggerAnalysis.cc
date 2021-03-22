@@ -16,8 +16,9 @@ int main(int argc, char ** argv)
         if ( ! muontrigger.triggerSelection()             )  continue;     // trigger
         if ( ! muontrigger.muonProbesSelection()          )  continue;    // muon first selection
         if ( ! muontrigger.muonTagsSelection()            )  continue;      // muon tag selection
-        muontrigger.muonMatchingProbesSelection(); 
-        muontrigger.muonFailingProbesSelection();
+        muontrigger.muonPassandFail_MatchingProbesSelection();
+        //muontrigger.muonMatchingProbesSelection(); 
+        //muontrigger.muonFailingProbesSelection();
     }
 } // end main
      
