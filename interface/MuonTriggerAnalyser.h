@@ -46,8 +46,9 @@ namespace analysis {
             virtual bool event(const int &i);
             bool muonProbesSelection();
             bool muonTagsSelection();
-            void muonMatchingProbesSelection();
-            void muonFailingProbesSelection();
+            //void muonMatchingProbesSelection();
+            //void muonFailingProbesSelection();
+            void muonPassandFail_MatchingProbesSelection();
             TH1F* DiMuonMass_afterTagSelection = new TH1F("DiMuonMass","DiMuonMass" , 50, 2.85, 3.35);
             TH1F* MatchedDiMuonMass = new TH1F("DiMuonMass of matched muons","Passing Probe" , 50, 2.85, 3.35);
             TH1F* FailedMatchingDiMuonMass = new TH1F("NOTMatchedDiMuonMass","Failing Probe" , 50, 2.85, 3.35);
