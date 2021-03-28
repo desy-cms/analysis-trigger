@@ -122,7 +122,7 @@ bool MuonTriggerAnalyser::muonTagsSelection()
 
     if ( ! onlineL1MuonMatching(1) )        return false;          //check tags L1 online matching 
     if ( ! onlineL3MuonMatching(1) )        return false;          //check tags L3 online matching 
-    //if ( selectedMuons_[1] -> pt() < 10 )   return false;          //pt condition for tags
+    //if ( selectedMuons_[0] -> pt() < 10 )   return false;          //pt condition for tags
 
     for ( int i = 0; i < config_->nMuonsMin(); i++ ) //loop to fill histogram after tag selection
     {
@@ -137,6 +137,8 @@ bool MuonTriggerAnalyser::muonTagsSelection()
         }
     }
 
+    TagsPt -> Fill (selectedMuons_[0]->pt()); //filling histogram of Tag's pt
+
     return true;
 }
 
@@ -148,99 +150,68 @@ void MuonTriggerAnalyser::muonPassandFail_MatchingProbesSelection()
     double failedmatchedDiMuonMassObtained;
 
 
-    if (onlineL1MuonMatching(2) )
+    if (onlineL1MuonMatching(2) && onlineL3MuonMatching(2))//Passing condition
     {
-        if (onlineL3MuonMatching(2) )
-        {  
-            for ( int i = 0; i < config_->nMuonsMin(); i++ ) //loop to fill histograms
-            {
-               for ( int j = i+1 ; j < config_->nMuonsMin(); j++ )
-               {
-                  m1matched = selectedMuons_[i] -> p4();
-                  m2matched = selectedMuons_[j] -> p4();
-                  mmatched = m1matched+m2matched;
-                  matchedDiMuonMassObtained = mmatched.M();
+       for ( int i = 0; i < config_->nMuonsMin(); i++ ) //loop to fill histograms
+       {
+          for ( int j = i+1 ; j < config_->nMuonsMin(); j++ )
+          {
+             m1matched = selectedMuons_[i] -> p4();
+             m2matched = selectedMuons_[j] -> p4();
+             mmatched = m1matched+m2matched;
+             matchedDiMuonMassObtained = mmatched.M();
 
-                  MatchedDiMuonMass -> Fill (matchedDiMuonMassObtained); //filling histograms with counts of the matched Jpsi muons 
-                }
-            }
-        }
+             MatchedDiMuonMass -> Fill (matchedDiMuonMassObtained); //filling histograms with counts of the matched Jpsi muons 
+                  
+             if (selectedMuons_[1] -> pt() > 11.5 && selectedMuons_[1] -> pt() < 12.5)
+             MatchedDiMuonMass_pTBin1 -> Fill (matchedDiMuonMassObtained);
+
+             if (selectedMuons_[1] -> pt() > 12.5 && selectedMuons_[1] -> pt() < 13.5)
+             MatchedDiMuonMass_pTBin2 -> Fill (matchedDiMuonMassObtained);
+
+             if (selectedMuons_[1] -> pt() > 13.5 && selectedMuons_[1] -> pt() < 18.5)
+             MatchedDiMuonMass_pTBin3 -> Fill (matchedDiMuonMassObtained);
+
+             if (selectedMuons_[1] -> pt() > 18.5 && selectedMuons_[1] -> pt() < 30.)
+             MatchedDiMuonMass_pTBin4 -> Fill (matchedDiMuonMassObtained);
+
+          }
+       }
+       MatchedProbesPt -> Fill (selectedMuons_[1]->pt()); //filling histogram of Passing Probe's pt
     }
 
-   else
-   {
-       if (! onlineL3MuonMatching(2))
+
+    else //failing condition
+    {
+       for ( int i = 0; i < config_->nMuonsMin(); i++ ) //loop to fill histograms
        {
-           for ( int i = 0; i < config_->nMuonsMin(); i++ ) //loop to fill histograms
-           {
-               for ( int j = i+1 ; j < config_->nMuonsMin(); j++ )
-              {
-                 m1failedmatched = selectedMuons_[i] -> p4();
-                 m2failedmatched = selectedMuons_[j] -> p4();
-                 mfailedmatched = m1failedmatched+m2failedmatched;
-                 failedmatchedDiMuonMassObtained = mfailedmatched.M();
+          for ( int j = i+1 ; j < config_->nMuonsMin(); j++ )
+          {
+             m1failedmatched = selectedMuons_[i] -> p4();
+             m2failedmatched = selectedMuons_[j] -> p4();
+             mfailedmatched = m1failedmatched+m2failedmatched;
+             failedmatchedDiMuonMassObtained = mfailedmatched.M();
+  
+             FailedMatchingDiMuonMass -> Fill (failedmatchedDiMuonMassObtained); //filling histograms with counts of the failed Jpsi muons 
+ 
+             if (selectedMuons_[1] -> pt() > 11.5 && selectedMuons_[1] -> pt() < 12.5)
+             FailedMatchingDiMuonMass_pTBin1 -> Fill (failedmatchedDiMuonMassObtained);
 
-                 FailedMatchingDiMuonMass -> Fill (failedmatchedDiMuonMassObtained); //filling histograms with counts of the matched Jpsi muons 
-               }
-           }
+             if (selectedMuons_[1] -> pt() > 12.5 && selectedMuons_[1] -> pt() < 13.5)
+             FailedMatchingDiMuonMass_pTBin2 -> Fill (failedmatchedDiMuonMassObtained);
+
+             if (selectedMuons_[1] -> pt() > 13.5 && selectedMuons_[1] -> pt() < 18.5)
+             FailedMatchingDiMuonMass_pTBin3 -> Fill (failedmatchedDiMuonMassObtained);
+
+             if (selectedMuons_[1] -> pt() > 18.5 && selectedMuons_[1] -> pt() < 30.)
+             FailedMatchingDiMuonMass_pTBin4 -> Fill (failedmatchedDiMuonMassObtained);
+          }
        }
-   }
-
+       FailedProbesPt -> Fill (selectedMuons_[1]->pt()); //filling histogram of Failing Probe's pt
+    }
 
    return;
 }
 
-
-/*
-void MuonTriggerAnalyser::muonMatchingProbesSelection()
-{
-    TLorentzVector m1matched, m2matched, mmatched;
-    double matchedDiMuonMassObtained;
-
-    if ( ! onlineL1MuonMatching(2) )        return;          //check tags L1 online matching 
-    if ( ! onlineL3MuonMatching(2) )        return;          //check tags L3 online matching 
-
-    for ( int i = 0; i < config_->nMuonsMin(); i++ ) //loop to fill histograms
-    {
-        for ( int j = i+1 ; j < config_->nMuonsMin(); j++ )
-        {
-            m1matched = selectedMuons_[i] -> p4();
-            m2matched = selectedMuons_[j] -> p4();
-            mmatched = m1matched+m2matched;
-            matchedDiMuonMassObtained = mmatched.M();
-
-            MatchedDiMuonMass -> Fill (matchedDiMuonMassObtained); //filling histograms with counts of the matched Jpsi muons 
-        }
-    }
-
-    return;
-}
-
-
-void MuonTriggerAnalyser::muonFailingProbesSelection()
-{
-    TLorentzVector m1failedmatched,m2failedmatched,mfailedmatched;
-    double failedmatchedDiMuonMassObtained;
-   
-    if ( onlineL1MuonMatching(2) )        return;          //check tags L1 online matching 
-    if ( onlineL3MuonMatching(2) )        return;          //check tags L3 online matching 
-
-    for ( int i = 0; i < config_->nMuonsMin(); i++ ) //loop to fill histograms
-    {
-        for ( int j = i+1 ; j < config_->nMuonsMin(); j++ )
-        {
-            m1failedmatched = selectedMuons_[i] -> p4();
-            m2failedmatched = selectedMuons_[j] -> p4();
-            mfailedmatched = m1failedmatched+m2failedmatched;
-            failedmatchedDiMuonMassObtained = mfailedmatched.M();
-
-            FailedMatchingDiMuonMass -> Fill (failedmatchedDiMuonMassObtained); //filling histograms with counts of the matched Jpsi muons 
-        }
-    }
-
-     
-    return;
-}
-*/
 
 
