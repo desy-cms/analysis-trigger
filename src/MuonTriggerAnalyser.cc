@@ -66,7 +66,7 @@ bool MuonTriggerAnalyser::event(const int & i)
 
 
 
-bool MuonTriggerAnalyser::muonProbesSelection()
+bool MuonTriggerAnalyser::muonsSelection()
 {
     TLorentzVector m1,m2,m;
     double DiMuonMassObtained;
@@ -122,7 +122,7 @@ bool MuonTriggerAnalyser::muonTagsSelection()
 
     if ( ! onlineL1MuonMatching(1) )        return false;          //check tags L1 online matching 
     if ( ! onlineL3MuonMatching(1) )        return false;          //check tags L3 online matching 
-    //if ( selectedMuons_[0] -> pt() < 10 )   return false;          //pt condition for tags
+    if ( selectedMuons_[0] -> pt() < 10 )   return false;          //pt condition for tags
 
     for ( int i = 0; i < config_->nMuonsMin(); i++ ) //loop to fill histogram after tag selection
     {
