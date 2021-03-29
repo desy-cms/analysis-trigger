@@ -44,14 +44,31 @@ namespace analysis {
         
            
             virtual bool event(const int &i);
-            bool muonProbesSelection();
+            bool muonsSelection();
             bool muonTagsSelection();
-            //void muonMatchingProbesSelection();
-            //void muonFailingProbesSelection();
             void muonPassandFail_MatchingProbesSelection();
+
+            TH1F* TagsPt = new TH1F("Tags_Pt","TagsPt" , 300, 0, 30);
+            TH1F* MatchedProbesPt = new TH1F("Matched_Probes_Pt","MatchedProbesPt" , 300, 0, 30);
+            TH1F* FailedProbesPt = new TH1F("Failed_Probes_Pt","FailedProbesPt" , 300, 0, 30);
+
             TH1F* DiMuonMass_afterTagSelection = new TH1F("DiMuonMass","DiMuonMass" , 50, 2.85, 3.35);
+
             TH1F* MatchedDiMuonMass = new TH1F("DiMuonMass of matched muons","Passing Probe" , 50, 2.85, 3.35);
-            TH1F* FailedMatchingDiMuonMass = new TH1F("NOTMatchedDiMuonMass","Failing Probe" , 50, 2.85, 3.35);
+            TH1F* FailedMatchingDiMuonMass = new TH1F("DiMuonMass of failing muons","Failing Probe" , 50, 2.85, 3.35);
+
+            TH1F* MatchedDiMuonMass_pTBin1 = new TH1F("DiMuonMass of passing muons pTBin1","Passing Probe pTBin1" , 50, 2.85, 3.35);
+            TH1F* FailedMatchingDiMuonMass_pTBin1 = new TH1F("DiMuonMass of failing muons pTBin1","Failing Probe pTBin1" , 50, 2.85, 3.35);
+
+            TH1F* MatchedDiMuonMass_pTBin2 = new TH1F("DiMuonMass of passing muons pTBin2","Passing Probe pTBin2" , 50, 2.85, 3.35);
+            TH1F* FailedMatchingDiMuonMass_pTBin2 = new TH1F("DiMuonMass of failing muons pTBin2","Failing Probe pTBin2" , 50, 2.85, 3.35);
+
+            TH1F* MatchedDiMuonMass_pTBin3 = new TH1F("DiMuonMass of passing muons pTBin3","Passing Probe pTBin3" , 50, 2.85, 3.35);
+            TH1F* FailedMatchingDiMuonMass_pTBin3 = new TH1F("DiMuonMass of failing muons pTBin3","Failing Probe pTBin3" , 50, 2.85, 3.35);
+
+            TH1F* MatchedDiMuonMass_pTBin4 = new TH1F("DiMuonMass of passing muons pTBin4","Passing Probe pTBin4" , 50, 2.85, 3.35);
+            TH1F* FailedMatchingDiMuonMass_pTBin4 = new TH1F("DiMuonMass of failing muons pTBin4","Failing Probe pTBin4" , 50, 2.85, 3.35);
+
             // ----------member data ---------------------------
          protected:
                
