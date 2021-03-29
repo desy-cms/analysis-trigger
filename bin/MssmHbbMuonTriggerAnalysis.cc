@@ -14,11 +14,9 @@ int main(int argc, char ** argv)
     {
         if ( ! muontrigger.event(i)                       )  continue;     // read event, run selection/json
         if ( ! muontrigger.triggerSelection()             )  continue;     // trigger
-        if ( ! muontrigger.muonProbesSelection()          )  continue;    // muon first selection
+        if ( ! muontrigger.muonsSelection()          )  continue;    // muon first selection
         if ( ! muontrigger.muonTagsSelection()            )  continue;      // muon tag selection
         muontrigger.muonPassandFail_MatchingProbesSelection();
-        //muontrigger.muonMatchingProbesSelection(); 
-        //muontrigger.muonFailingProbesSelection();
     }
 } // end main
      
