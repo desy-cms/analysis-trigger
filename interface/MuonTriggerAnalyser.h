@@ -23,10 +23,12 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <fstream>
 // 
 // user include files
 
 #include "Analysis/Tools/interface/Analyser.h"
+#include "Analysis/Tools/interface/Analysis.h"
 
 //
 // class declaration
@@ -68,6 +70,7 @@ namespace analysis {
 
             TH1F* MatchedDiMuonMass_pTBin4 = new TH1F("DiMuonMass of passing muons pTBin4","Passing Probe pTBin4" , 50, 2.85, 3.35);
             TH1F* FailedMatchingDiMuonMass_pTBin4 = new TH1F("DiMuonMass of failing muons pTBin4","Failing Probe pTBin4" , 50, 2.85, 3.35);
+
 
             // ----------member data ---------------------------
          protected:
