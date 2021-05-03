@@ -15,11 +15,13 @@ int main(int argc, char ** argv)
 
     for ( int i = 0 ; i < muontrigger.nEvents() ; ++i )
     {
-        if ( ! muontrigger.event(i)                       )  continue;     // read event, run selection/json
-        if ( ! muontrigger.selectionTrigger()             )  continue;     // trigger
-        if ( ! muontrigger.muonsSelection()               )  continue;     // muon first selection
-        if ( ! muontrigger.muonTagsSelection()            )  continue;     // muon tag selection
+    
+        if ( ! muontrigger.event(i)                       )   continue;     // read event, run selection/json
+        if ( ! muontrigger.selectionTrigger()             )   continue;     // trigger
+        if ( ! muontrigger.muonsSelection()               )   continue;     // muon first selection
+        if ( ! muontrigger.muonTagsSelection()            )   continue;     // muon tag selection
         muontrigger.muonPassandFail_MatchingProbesSelection();  
+    
     }
 } // end main
      
