@@ -13,6 +13,7 @@
 
 // system include files
 #include <iostream>
+#include <fstream>
 // 
 // user include files
 #include "Analysis/Trigger/interface/MuonTriggerAnalyser.h"
@@ -70,16 +71,15 @@ bool MuonTriggerAnalyser::muonsSelection()
 {
     TLorentzVector m1,m2,m;
     double DiMuonMassObtained;
-    double JPsiMass = 3.096;	 //GeV
-    double MassWindow = 0.15;    //GeV
+    double JPsiMass = 3.1;	 //GeV
+    double MassWindow = 0.2;    //GeV
     int q1, q2;
     
-    if ( ! this -> selectionMuonId()                 )   return false; // check if event has muons
-    if ( ! this -> selectionMuons()                  )   return false; // selection of the two leading muons according to nminMuons, ptmax, ptmin and etamax from config file
-    if ( ! selectedMuons_[0] -> isTightMuon()        )   return false; // check tight ID condition of the two leading muons 
-    if ( ! selectedMuons_[1] -> isTightMuon()        )   return false; // check tight ID condition of the two leading muons 
+    if ( ! this -> selectionMuonId()                             )   return false; // check if event has muons
+    if ( ! this -> selectionMuons()                              )   return false; // selection of the two leading muons according to nminMuons, ptmax, ptmin and etamax from config file
+    if (selectedMuons_[0] -> deltaR(*selectedMuons_[1]) < 0.1 )   return false; // check deltaR between leading muons
     
-    //Discriminate two muons with same charge and that they sum is outside J/Psi mass window
+    //Discriminate two muons with same charge and that their sum is outside J/Psi mass window
     for ( int i = 0; i < config_ -> nMuonsMin(); i++ )
     {
         for ( int j = i+1 ; j < config_->nMuonsMin(); j++ )
@@ -91,7 +91,6 @@ bool MuonTriggerAnalyser::muonsSelection()
 
 	    if (q1 == q2)  // check if the muons have opposite charges
             {
-	        //std::cout <<"EVENT NOT VALID q1 = q2"<<std::endl;
                 return false;
             }
 
@@ -101,11 +100,9 @@ bool MuonTriggerAnalyser::muonsSelection()
             
             if (fabs(DiMuonMassObtained-JPsiMass) > MassWindow) //see if sum inside J/Psi mass window
             {
-	        //std::cout <<"EVENT NOT VALID : |DiMuonMass - JPsiMass| > MassWindow"<<std::endl;
                 return false;
             }
 
-            //DiMuonMass -> Fill (DiMuonMassObtained); //filling histograms with counts of Jpsi muons
         }
     }
 
@@ -114,9 +111,6 @@ bool MuonTriggerAnalyser::muonsSelection()
 
 bool MuonTriggerAnalyser::muonTagsSelection()
 {
-  //  if ( ! analysis_ -> match <Muon,TriggerObject> (selectedMuons_[1],config_ -> triggerObjectsL1Muons(),0.3) ) return;    //check tags L1 online matching 
-  //  if ( ! analysis_ -> match <Muon,TriggerObject> (selectedMuons_[1],config_ -> triggerObjectsL3Muons(),0.3) ) return;    //check tags L3 online matching 
-
     TLorentzVector m1_afterTagSelection, m2_afterTagSelection, m_afterTagSelection;
     double MassObtained;
 
@@ -130,7 +124,7 @@ bool MuonTriggerAnalyser::muonTagsSelection()
         {
             m1_afterTagSelection = selectedMuons_[i] -> p4();
             m2_afterTagSelection = selectedMuons_[j] -> p4();
-            m_afterTagSelection = m1_afterTagSelection+m2_afterTagSelection;
+            m_afterTagSelection = m1_afterTagSelection + m2_afterTagSelection;
             MassObtained = m_afterTagSelection.M();
 
             DiMuonMass_afterTagSelection -> Fill (MassObtained); //filling histograms with counts of the Jpsi muons resulting after the tag selection
@@ -175,8 +169,10 @@ void MuonTriggerAnalyser::muonPassandFail_MatchingProbesSelection()
              if (selectedMuons_[1] -> pt() > 18.5 && selectedMuons_[1] -> pt() < 30.)
              MatchedDiMuonMass_pTBin4 -> Fill (matchedDiMuonMassObtained);
 
+
           }
        }
+
        MatchedProbesPt -> Fill (selectedMuons_[1]->pt()); //filling histogram of Passing Probe's pt
     }
 
@@ -205,12 +201,14 @@ void MuonTriggerAnalyser::muonPassandFail_MatchingProbesSelection()
 
              if (selectedMuons_[1] -> pt() > 18.5 && selectedMuons_[1] -> pt() < 30.)
              FailedMatchingDiMuonMass_pTBin4 -> Fill (failedmatchedDiMuonMassObtained);
+
           }
        }
+
+             
        FailedProbesPt -> Fill (selectedMuons_[1]->pt()); //filling histogram of Failing Probe's pt
     }
 
-   return;
 }
 
 
