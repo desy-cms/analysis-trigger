@@ -72,12 +72,12 @@ bool MuonTriggerAnalyser::muonsSelection()
     TLorentzVector m1,m2,m;
     double DiMuonMassObtained;
     double JPsiMass = 3.1;	 //GeV
-    double MassWindow = 0.2;    //GeV
+    double MassWindow = 0.2;     //GeV
     int q1, q2;
     
     if ( ! this -> selectionMuonId()                             )   return false; // check if event has muons
     if ( ! this -> selectionMuons()                              )   return false; // selection of the two leading muons according to nminMuons, ptmax, ptmin and etamax from config file
-    if (selectedMuons_[0] -> deltaR(*selectedMuons_[1]) < 0.1 )   return false; // check deltaR between leading muons
+    if (selectedMuons_[0] -> deltaR(*selectedMuons_[1]) < 0.1    )   return false; // check deltaR between leading muons
     
     //Discriminate two muons with same charge and that their sum is outside J/Psi mass window
     for ( int i = 0; i < config_ -> nMuonsMin(); i++ )
@@ -90,19 +90,13 @@ bool MuonTriggerAnalyser::muonsSelection()
             q2 = selectedMuons_[j] -> q();
 
 	    if (q1 == q2)  // check if the muons have opposite charges
-            {
-                return false;
-            }
+            return false;
 
             m = m1+m2;
             DiMuonMassObtained = m.M();
-
             
             if (fabs(DiMuonMassObtained-JPsiMass) > MassWindow) //see if sum inside J/Psi mass window
-            {
-                return false;
-            }
-
+            return false;
         }
     }
 
@@ -155,25 +149,11 @@ void MuonTriggerAnalyser::muonPassandFail_MatchingProbesSelection()
              mmatched = m1matched+m2matched;
              matchedDiMuonMassObtained = mmatched.M();
 
-             MatchedDiMuonMass -> Fill (matchedDiMuonMassObtained); //filling histograms with counts of the matched Jpsi muons 
-                  
-             if (selectedMuons_[1] -> pt() > 11.5 && selectedMuons_[1] -> pt() < 12.5)
-             MatchedDiMuonMass_pTBin1 -> Fill (matchedDiMuonMassObtained);
-
-             if (selectedMuons_[1] -> pt() > 12.5 && selectedMuons_[1] -> pt() < 13.5)
-             MatchedDiMuonMass_pTBin2 -> Fill (matchedDiMuonMassObtained);
-
-             if (selectedMuons_[1] -> pt() > 13.5 && selectedMuons_[1] -> pt() < 18.5)
-             MatchedDiMuonMass_pTBin3 -> Fill (matchedDiMuonMassObtained);
-
-             if (selectedMuons_[1] -> pt() > 18.5 && selectedMuons_[1] -> pt() < 30.)
-             MatchedDiMuonMass_pTBin4 -> Fill (matchedDiMuonMassObtained);
-
-
+             PassedDiMuonMass_vs_probespT -> Fill (matchedDiMuonMassObtained, selectedMuons_[j] -> pt());
           }
        }
 
-       MatchedProbesPt -> Fill (selectedMuons_[1]->pt()); //filling histogram of Passing Probe's pt
+       PassedProbesPt -> Fill (selectedMuons_[1]->pt()); //filling histogram of Passing Probe's pt
     }
 
 
@@ -187,21 +167,8 @@ void MuonTriggerAnalyser::muonPassandFail_MatchingProbesSelection()
              m2failedmatched = selectedMuons_[j] -> p4();
              mfailedmatched = m1failedmatched+m2failedmatched;
              failedmatchedDiMuonMassObtained = mfailedmatched.M();
-  
-             FailedMatchingDiMuonMass -> Fill (failedmatchedDiMuonMassObtained); //filling histograms with counts of the failed Jpsi muons 
- 
-             if (selectedMuons_[1] -> pt() > 11.5 && selectedMuons_[1] -> pt() < 12.5)
-             FailedMatchingDiMuonMass_pTBin1 -> Fill (failedmatchedDiMuonMassObtained);
 
-             if (selectedMuons_[1] -> pt() > 12.5 && selectedMuons_[1] -> pt() < 13.5)
-             FailedMatchingDiMuonMass_pTBin2 -> Fill (failedmatchedDiMuonMassObtained);
-
-             if (selectedMuons_[1] -> pt() > 13.5 && selectedMuons_[1] -> pt() < 18.5)
-             FailedMatchingDiMuonMass_pTBin3 -> Fill (failedmatchedDiMuonMassObtained);
-
-             if (selectedMuons_[1] -> pt() > 18.5 && selectedMuons_[1] -> pt() < 30.)
-             FailedMatchingDiMuonMass_pTBin4 -> Fill (failedmatchedDiMuonMassObtained);
-
+             FailedDiMuonMass_vs_probespT -> Fill (failedmatchedDiMuonMassObtained, selectedMuons_[j] -> pt());
           }
        }
 
