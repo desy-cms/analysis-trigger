@@ -9,10 +9,11 @@
 <use name="Analysis/Trigger" />
 
 
+<!--
 <bin   name="JetTriggerEffTandP" file="JetTriggerEffTandP.cc">
 <flags   LDFLAGS="-lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lz -pthread -lm -ldl -rdynamic"/>
 </bin>
-
+-->
 
 
 <bin   name="OnlineBtagExperience" file="OnlineBtagExperience.cc">
@@ -24,6 +25,10 @@
 </bin>
 
 <bin   name="OnlineBtagExperienceEras" file="OnlineBtagExperienceEras.cc">
+<flags   LDFLAGS="-lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lz -pthread -lm -ldl -rdynamic"/>
+</bin>
+
+<bin   name="AnalyserL1TJets" file="AnalyserL1TJets.cc">
 <flags   LDFLAGS="-lCore -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lz -pthread -lm -ldl -rdynamic"/>
 </bin>
 
