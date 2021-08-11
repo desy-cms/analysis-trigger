@@ -28,6 +28,7 @@ int main(int argc, char ** argv)
    auto jet_deta = vfloat[4];
    auto mu_pt    = vfloat[5];
    auto mu_eta   = vfloat[6];
+   auto mu_jet_dr = vfloat[7];
    
    auto jet_nmin = vint[0];
    auto mu_nmin = vint[1];
@@ -51,6 +52,9 @@ int main(int argc, char ** argv)
       if ( ! analyser.selectionNL1TMuons(1) ) continue;      
       if ( ! analyser.selectionL1TMuon(mu_pt, mu_eta) ) continue;
       if ( ! analyser.selectionL1TMuonQuality(mu_qual) ) continue;
+      
+      // muon in jet
+      if ( ! analyser.selectionL1TMuonJet(mu_jet_dr) ) continue;
       
       // histograms
       analyser.fillL1TJetHistograms("final");
