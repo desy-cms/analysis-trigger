@@ -25,17 +25,24 @@ int main(int argc, char ** argv)
    auto jet_etaX = vfloat[1];
    auto jet_ptY  = vfloat[2];
    auto jet_etaY = vfloat[3];
+   auto jet_deta = vfloat[4];
    auto jet_nmin = vint[0];
    
    for ( int i = 0 ; i < analyser.nEvents() ; ++i )
    {
       if ( ! analyser.event(i) ) continue;
-      if ( ! analyser.selectionNL1TJets(jet_nmin) ) continue;
       
+      // min number of jets (must be 2)
+      if ( ! analyser.selectionNL1TJets(2) ) continue;
+      
+      // histograms
       analyser.fillL1TJetHistograms("initial");
-      
+      // kinematics
       if ( ! analyser.selectionL1TDijet(jet_ptX, jet_etaX, jet_ptY, jet_etaY) ) continue;
+      // delta_eta
+      if ( ! analyser.selectionL1TDijetDeta(jet_deta) ) continue;
       
+      // histograms
       analyser.fillL1TJetHistograms("final");
    }
    
