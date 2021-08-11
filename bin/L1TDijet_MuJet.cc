@@ -13,8 +13,9 @@ int main(int argc, char ** argv)
    auto analysis = analyser.analysis(); // that's the usual Analysis class
    
    // histograms
-   analyser.l1tjetHistograms(2,"initial");
-   analyser.l1tjetHistograms(2,"final");
+   analyser.l1tjetHistograms("initial");
+   analyser.l1tjetHistograms("dijet");
+   analyser.l1tjetHistograms("final");
    
 
    auto vfloat = analyser.config()->vectorFloat();
@@ -38,15 +39,16 @@ int main(int argc, char ** argv)
    {
       if ( ! analyser.event(i) ) continue;
       
-      // min number of jets (must be 2)
-      if ( ! analyser.selectionNL1TJets(2) ) continue;
-      
       // histograms
       analyser.fillL1TJetHistograms("initial");
+      // min number of jets (must be 2)
+      if ( ! analyser.selectionNL1TJets(2) ) continue;
       // kinematics
       if ( ! analyser.selectionL1TDijet(jet_ptX, jet_etaX, jet_ptY, jet_etaY) ) continue;
       // delta_eta
       if ( ! analyser.selectionL1TDijetDeta(jet_deta) ) continue;
+      // histograms
+      analyser.fillL1TJetHistograms("dijet");
       
       // muon
       if ( ! analyser.selectionNL1TMuons(1) ) continue;      

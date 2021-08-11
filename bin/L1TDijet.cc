@@ -13,8 +13,8 @@ int main(int argc, char ** argv)
    auto analysis = analyser.analysis(); // that's the usual Analysis class
    
    // histograms
-   analyser.l1tjetHistograms(2,"initial");
-   analyser.l1tjetHistograms(2,"final");
+   analyser.l1tjetHistograms("initial");
+   analyser.l1tjetHistograms("final");
    
 
    auto vfloat = analyser.config()->vectorFloat();
