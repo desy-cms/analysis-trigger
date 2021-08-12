@@ -14,6 +14,7 @@ int main(int argc, char ** argv)
    
    // histograms
    analyser.l1tjetHistograms("initial");
+   analyser.l1tjetHistograms("muon_jet");
    analyser.l1tjetHistograms("dijet");
    analyser.l1tjetHistograms("final");
    
@@ -41,22 +42,27 @@ int main(int argc, char ** argv)
       
       // histograms
       analyser.fillL1TJetHistograms("initial");
-      // min number of jets (must be 2)
-      if ( ! analyser.selectionNL1TJets(2) ) continue;
-      // kinematics
-      if ( ! analyser.selectionL1TDijet(jet_ptX, jet_etaX, jet_ptY, jet_etaY) ) continue;
-      // delta_eta
-      if ( ! analyser.selectionL1TDijetDeta(jet_deta) ) continue;
-      // histograms
-      analyser.fillL1TJetHistograms("dijet");
-      
+
+// muon in jet
+      if ( ! analyser.selectionL1TJet(jet_ptY, jet_etaY) ) continue;
       // muon
       if ( ! analyser.selectionNL1TMuons(1) ) continue;      
       if ( ! analyser.selectionL1TMuon(mu_pt, mu_eta) ) continue;
       if ( ! analyser.selectionL1TMuonQuality(mu_qual) ) continue;
-      
       // muon in jet
       if ( ! analyser.selectionL1TMuonJet(mu_jet_dr) ) continue;
+      // histograms
+      analyser.fillL1TJetHistograms("muon_jet");
+
+// dijet      
+      // kinematics
+      if ( ! analyser.selectionL1TDijet(jet_ptY, jet_etaY) ) continue;
+      // delta_eta
+      if ( ! analyser.selectionL1TDijetDeta(jet_deta) ) continue;
+      // histograms
+      analyser.fillL1TJetHistograms("dijet");
+      // dijet asymmetric
+      if ( ! analyser.selectionL1TDijet(jet_ptX, jet_etaX, jet_ptY, jet_etaY) ) continue;
       
       // histograms
       analyser.fillL1TJetHistograms("final");
