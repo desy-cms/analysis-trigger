@@ -43,30 +43,32 @@ int main(int argc, char ** argv)
       // histograms
       analyser.fillL1TJetHistograms("initial");
 
-// muon in jet
-      if ( ! analyser.selectionL1TJet(jet_ptY, jet_etaY) ) continue;
-      // muon
-      if ( ! analyser.selectionNL1TMuons(1) ) continue;      
-      if ( ! analyser.selectionL1TMuon(mu_pt, mu_eta) ) continue;
-      if ( ! analyser.selectionL1TMuonQuality(mu_qual) ) continue;
-      // muon in jet
-      if ( ! analyser.selectionL1TMuonJet(mu_jet_dr) ) continue;
-      // histograms
-      analyser.fillL1TJetHistograms("muon_jet");
-
 // dijet      
       // kinematics
-      if ( ! analyser.selectionL1TDijet(jet_ptY, jet_etaY) ) continue;
+      // dijet asymmetric
+      if ( ! analyser.selectionL1TDijet(jet_ptX, jet_etaX, jet_ptY, jet_etaY) ) continue;
+      
       // delta_eta
       if ( ! analyser.selectionL1TDijetDeta(jet_deta) ) continue;
       // histograms
       analyser.fillL1TJetHistograms("dijet");
-      // dijet asymmetric
-      if ( ! analyser.selectionL1TDijet(jet_ptX, jet_etaX, jet_ptY, jet_etaY) ) continue;
+      
+// muon in jet
+      // muon
+      if ( ! analyser.selectionNL1TMuons(1) ) continue;      
+      if ( ! analyser.selectionL1TMuon(mu_pt, mu_eta) ) continue;
+      if ( ! analyser.selectionL1TMuonQuality(mu_qual) ) continue;
+      // muon jet
+      if ( ! analyser.selectionL1TMuonJet(mu_jet_dr) ) continue;
+      // histograms
+      analyser.fillL1TJetHistograms("muon_jet");
+      
+      
       
       // histograms
       analyser.fillL1TJetHistograms("final");
    }
+   
    
    return 0;
 }
