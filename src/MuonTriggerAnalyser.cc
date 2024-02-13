@@ -1,13 +1,8 @@
-/**\class MssmHbb MssmHbbAnalyser.cc Analysis/Tools/src/MssmHbbAnalyser.cc
 
- Description: [one line class summary]
-
- Implementation:
-     [Notes on implementation]
-*/
 //
-// Original Author:  Roberval Walsh
-//         Created:  Mon, 20 Oct 2014 14:24:08 GMT
+//          Author:  Daina Leyva
+//         Created:  Aug. 2021
+//         Reviwed:  Feb. 2024
 //
 //
 
@@ -76,8 +71,8 @@ bool MuonTriggerAnalyser::muonsSelection()
     int q1, q2;
     
     if ( ! this -> selectionMuonId()                             )   return false; // check if event has muons
-    if ( ! this -> selectionMuons()                              )   return false; // selection of the two leading muons according to nminMuons, ptmax, ptmin and etamax from config file
-    if (selectedMuons_[0] -> deltaR(*selectedMuons_[1]) < 0.1    )   return false; // check deltaR between leading muons
+    if ( ! this -> selectionMuons()                              )   return false; // selection of the 2 leading muons according to nminMuons, ptmax, ptmin and etamax from config file
+    if (selectedMuons_[0] -> deltaR(*selectedMuons_[1]) < 0.1    )   return false; // check deltaR between 2 leading muons
     
     //Discriminate two muons with same charge and that their sum is outside J/Psi mass window
     for ( int i = 0; i < config_ -> nMuonsMin(); i++ )
@@ -105,9 +100,10 @@ bool MuonTriggerAnalyser::muonsSelection()
 
 bool MuonTriggerAnalyser::muonTagsSelection()
 {
-    TLorentzVector m1_afterTagSelection, m2_afterTagSelection, m_afterTagSelection;
+    TLorentzVector m1_afterTagSelection, m2_afterTagSelection, m_afterTagSelection; //reconstructed mass after tag selection
     double MassObtained;
 
+    //matching of tag muon to online object and kinematic selection
     if ( ! onlineL1MuonMatching(1) )        return false;          //check tags L1 online matching 
     if ( ! onlineL3MuonMatching(1) )        return false;          //check tags L3 online matching 
     if ( selectedMuons_[0] -> pt() < 10 )   return false;          //pt condition for tags
@@ -130,10 +126,10 @@ bool MuonTriggerAnalyser::muonTagsSelection()
     return true;
 }
 
-void MuonTriggerAnalyser::muonPassandFail_MatchingProbesSelection()
+void MuonTriggerAnalyser::reconstructJPsi()
 {
-    TLorentzVector m1matched, m2matched, mmatched;
-    TLorentzVector m1failedmatched,m2failedmatched,mfailedmatched;
+    TLorentzVector m1matched, m2matched, mmatched; //reconstructed mass after probes selection, from passing probes
+    TLorentzVector m1failedmatched,m2failedmatched,mfailedmatched; //reconstructed mass after probes selection, from failing probes
     double matchedDiMuonMassObtained;
     double failedmatchedDiMuonMassObtained;
 

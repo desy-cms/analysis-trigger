@@ -1,23 +1,13 @@
 #ifndef Analysis_Trigger_JetTriggerAnalyser_h
 #define Analysis_Trigger_JetTriggerAnalyser_h 1
 
-// -*- C++ -*-
 //
-// Package:    Analysis/MssmHbb
-// Class:      Analysis
-// 
-/**\class Analysis MssmHbbAnalyser.cc Analysis/MssmHbb/src/MssmHbbAnalyser.cc
+//          Author:  Daina Leyva
+//         Created:  Aug. 2021
+//         Reviwed:  Feb. 2024
+//
+//
 
- Description: [one line class summary]
-
- Implementation:
-     [Notes on implementation]
-*/
-//
-// Original Author:  Roberval Walsh Bastos Rangel
-//         Created:  Mon, 20 Oct 2014 14:24:08 GMT
-//
-//
 
 // system include files
 #include <memory>
