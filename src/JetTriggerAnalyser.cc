@@ -1,15 +1,10 @@
-/**\class MssmHbb MssmHbbAnalyser.cc Analysis/Tools/src/MssmHbbAnalyser.cc
+//
+//          Author:  Daina Leyva
+//         Created:  Aug. 2021
+//         Reviwed:  Feb. 2024
+//
+//
 
- Description: [one line class summary]
-
- Implementation:
-     [Notes on implementation]
-*/
-//
-// Original Author:  Roberval Walsh
-//         Created:  Mon, 20 Oct 2014 14:24:08 GMT
-//
-//
 
 // system include files
 #include <iostream>
@@ -75,8 +70,8 @@ bool JetTriggerAnalyser::jetKTEfirstSelection()
     }
 
     if ( selectedJets_[0]->deltaPhi(*selectedJets_[1]) < 2.4 ) return false;
-    if ( selectedJets_[0]->eta() > 2.3 ) return false;
-    if ( selectedJets_[1]->eta() > 2.3 ) return false;
+    if ( fabs(selectedJets_[0]->eta()) > 2.3 ) return false;
+    if ( fabs(selectedJets_[1]->eta()) > 2.3 ) return false;
     if ( selectedJets_[2])
          if ( selectedJets_[2]->pt() > (0.3*(selectedJets_[0]->pt()+selectedJets_[1]->pt())*0.5) ) return false;
 
